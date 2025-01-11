@@ -1,0 +1,926 @@
+<html>
+
+<body>
+    <form>
+        <style>
+        body {
+            background-color: azure; /* Đặt màu nền cho trang là màu xanh nhạt */
+            margin: 0; /* Loại bỏ khoảng cách mặc định của trình duyệt */
+            padding: 0; /* Loại bỏ khoảng cách bên trong */
+            box-sizing: border-box; /* Tính kích thước phần tử bao gồm cả padding và border */
+        }
+
+        .navbar {
+            background-color: #333; /* Đặt màu nền thanh điều hướng là màu xám đậm */
+            color: white; /* Màu chữ trắng */
+            padding: 10px 15px; /* Tạo khoảng cách trong thanh điều hướng */
+            position: fixed; /* Cố định thanh điều hướng khi cuộn */
+            top: 0; /* Vị trí từ trên cùng */
+            width: 100%; /* Chiều rộng bằng chiều rộng trang */
+            display: flex; /* Sử dụng Flexbox để căn chỉnh nội dung */
+            align-items: center; /* Căn giữa nội dung theo trục dọc */
+        }
+
+        .menu-icon {
+            font-size: 30px; /* Tăng kích thước biểu tượng menu */
+            cursor: pointer; /* Con trỏ chuyển thành bàn tay khi hover */
+            margin-right: 20px; /* Tạo khoảng cách bên phải */
+        }
+
+        .sidebar {
+            height: 100%; /* Chiều cao 100% màn hình */
+            width: 0; /* Thanh bên ban đầu ẩn (chiều rộng = 0) */
+            position: fixed; /* Cố định vị trí khi cuộn */
+            top: 0; /* Đặt từ trên cùng */
+            left: 0; /* Đặt sát bên trái */
+            background-color: #111; /* Màu nền thanh bên là đen nhạt */
+            overflow-x: hidden; /* Ẩn cuộn ngang nếu nội dung tràn */
+            transition: 0.5s; /* Hiệu ứng chuyển động mượt */
+            padding-top: 60px; /* Khoảng cách nội dung bên trong từ trên xuống */
+        }
+
+        .sidebar a {
+            padding: 10px 15px; /* Khoảng cách bên trong liên kết */
+            display: block; /* Mỗi liên kết chiếm 1 dòng */
+            color: white; /* Màu chữ trắng */
+            text-decoration: none; /* Loại bỏ gạch chân */
+        }
+
+        .sidebar a:hover {
+            background-color: #575757; /* Đổi màu nền khi hover */
+        }
+
+        .close-btn {
+            position: absolute; /* Định vị dựa trên thanh bên */
+            top: 10px; /* Cách mép trên 10px */
+            right: 20px; /* Cách mép phải 20px */
+            font-size: 30px; /* Kích thước lớn để dễ nhìn */
+            cursor: pointer; /* Hiển thị con trỏ bàn tay khi hover */
+        }
+
+        .product-container {
+            margin: 70px ; /* Cách mép trên 70px và canh giữa container */
+            padding: 20px; /* Khoảng cách bên trong container */
+            display: flex; /* Sử dụng Flexbox để sắp xếp các sản phẩm */
+            justify-content: space-between; /* Dàn đều sản phẩm từ trái sang phải */
+            gap: 40px; /* Khoảng cách giữa các sản phẩm */
+            max-width: 1400px; /* Giới hạn chiều rộng tối đa của container */
+            box-sizing: border-box; /* Tính padding và border vào kích thước container */
+            flex-wrap: wrap; /* Cho phép xuống dòng khi đầy hàng */
+        }
+
+        .product {
+            background-color: white; /* Nền trắng cho từng sản phẩm */
+            border: 1px solid black; /* Viền đen xung quanh sản phẩm */
+            border-radius: 5px; /* Bo góc sản phẩm */
+            width: 150px; /* Chiều rộng mỗi ô sản phẩm */
+            text-align: center; /* Canh giữa nội dung theo chiều ngang */
+            padding: 15px; /* Khoảng cách bên trong ô sản phẩm */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng nhẹ */
+            height: 280px; /* Chiều cao mỗi ô sản phẩm */
+            
+        }
+
+        .product img {
+            width: 100%; /* Hình ảnh co giãn theo chiều rộng ô */
+            height: 150px; /* Tự điều chỉnh chiều cao để giữ tỉ lệ */
+            border-radius: 5px; /* Bo góc hình ảnh */
+        }
+
+        .product h1 {
+            font-size: 18px; /* Kích thước chữ lớn cho tên sản phẩm */
+            margin: 10px 0; /* Khoảng cách trên và dưới */
+        }
+
+        .product span {
+            display: block; /* Mỗi thông tin chiếm 1 dòng riêng */
+            margin: 5px 0; /* Khoảng cách trên dưới mỗi thông tin */
+        }
+
+        .product button {
+            background-color: orange; /* Màu nền nút là cam */
+            border: none; /* Loại bỏ viền nút */
+            color: white; /* Màu chữ trắng */
+            padding: 10px 20px; /* Khoảng cách bên trong nút */
+            font-size: 10px; /* Kích thước chữ nhỏ */
+            border-radius: 5px; /* Bo góc nút */
+            cursor: pointer; /* Hiển thị con trỏ bàn tay khi hover */
+        }
+
+        .product button:hover {
+            background-color: darkorange; /* Đổi màu nút khi hover */
+        }
+            
+        </style>
+        </head>
+
+        <body>
+
+            <!-- Thanh điều hướng -->
+            <div class="navbar">
+                <span class="menu-icon" onclick="openNav()">&#9776;</span>
+                <h2>Cửa hàng online</h2>
+            </div>
+
+            <!-- Thanh bên -->
+            <div class="sidebar" id="mySidebar">
+                <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+                <a href="trangchu.html">Trang chủ</a>
+                <a href="sanpham.html">Sản phẩm</a>
+            </div>
+            <!-- JavaScript điều khiển thanh bên -->
+            <script src="sanpham1.js"></script>
+            <!--Phần sản phẩm-->
+            <div class="product-container">
+                <!-- Sản phẩm 1 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-16-pro-max.png" alt="Iphone 16 Pro Max">
+                    <h1>Iphone 16 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">38.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>40.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 2 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_5.png" alt="Iphone 15 Pro Max">
+                    <h1>Iphone 15 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">34.590.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>40.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 3-->
+                 <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-14-pro-256gb_1.png">
+                    <h1>Iphone 14 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">30.590.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                 </div>
+                <!-- Sản phẩm 4-->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/1/_/1_66_6_2_1_13.jpg">
+                    <h1>Iphone 13 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">25.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 5 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/d/o/download_37__4.png">
+                    <h1>Iphone 12 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">15.590.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>31.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 6 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-11-pro-max-midnight-green-select-2019_1_1_2_2_3.png">
+                    <h1>Iphone 11 Pro Max</h1>
+                    <span style="color: red; font-size: 20px;">10.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>32.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 7 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/g/a/galaxy-z-fold-5-kem-1_2.jpg">
+                    <h1>Samsung Galaxy Z Fold 5</h1>
+                    <span style="color: red; font-size: 20px;">29.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>44.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 8 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-s23-ulatra_2_.png">
+                    <h1>Samsung Galaxy S23 Ultra</h1>
+                    <span style="color: red; font-size: 20px;">22.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>36.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 9 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-s23-ulatra_2_.png">
+                    <h1>Samsung Galaxy Z Flip 5</h1>
+                    <span style="color: red; font-size: 20px;">15.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>25.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 10 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-note-20-ultra-5g.png">
+                    <h1>Samsung Galaxy Note 20 Ultra</h1>
+                    <span style="color: red; font-size: 20px;">32.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 11 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/m/sm-s908_galaxys22ultra_front_phantomwhite_211119_1_1_2_1.jpg">
+                    <h1>Samsung Galaxy S22 Ultra</h1>
+                    <span style="color: red; font-size: 20px;">36.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 12 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/a/samsung-galaxy-s21-ultra-1_1_2.jpg">
+                    <h1>Samsung Galaxy S21 Ultra</h1>
+                    <span style="color: red; font-size: 20px;">33.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 13 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/d/o/download_1__6_6_1_2_1_1.png">
+                    <h1>Oppo Find X6 Pro</h1>
+                    <span style="color: red; font-size: 20px;">10.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>19.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 14 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/o/p/oppo-find-x3-pro-5g-1_2_2.jpg">
+                    <h1>Oppo Find X5 Pro</h1>
+                    <span style="color: red; font-size: 20px;">12.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>19.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 15 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/o/p/oppo-reno-10x-zoom-2_1_1.jpg">
+                    <h1>Oppo Reno 10x Zoom</h1>
+                    <span style="color: red; font-size: 20px;">18.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 16 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/o/p/oppo-x2-xam_2.jpg">
+                    <h1>Oppo Find X2 Pro</h1>
+                    <span style="color: red; font-size: 20px;">13.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>19.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 17 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/o/p/oppo_reno6_2.jpg">
+                    <h1>Oppo Reno 6 Pro+ 5G</h1>
+                    <span style="color: red; font-size: 20px;">11.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>13.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 18 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/o/p/oppo-f19-pro-plus.jpg">
+                    <h1>Oppo F19 Pro+ 5G</h1>
+                    <span style="color: red; font-size: 20px;">10.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>12.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div> 
+                <!-- Sản phẩm 19 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_8_15_638276943814453136_lenovo-ideapad-3-14iah8-xam-dd.jpg">
+                    <h1>Lenovo IdeaPad 3</h1>
+                    <span style="color: red; font-size: 20px;">13.890.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>15.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 20 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:quality(100)/dell_inspiron_15_3520_black_d3c2a2c3c6.png">
+                    <h1>Dell Inspiron 3511</h1>
+                    <span style="color: red; font-size: 20px;">16.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>17.290.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 21 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_9_25_638312551188210185_hp-pavilion-15-eg3095tu-bac-dd.jpg">
+                    <h1>HP Pavilion 15</h1>
+                    <span style="color: red; font-size: 20px;">17.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>19.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 22 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2024_6_20_638545036205249941_a1505va-ma492w-thumb.jpg">
+                    <h1>Asus VivoBook 15 X1502</h1>
+                    <span style="color: red; font-size: 20px;">20.220.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>21.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 23 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/acer_aspire_5_a515_58_cb1508e90a.png">
+                    <h1>Acer Aspire 5</h1>
+                    <span style="color: red; font-size: 20px;">14.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>17.490.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 24 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2021_10_9_637694135370655519_microsoft-surface-go-bac-dd.jpg">
+                    <h1>Microsoft Surface Laptop Go</h1>
+                    <span style="color: red; font-size: 20px;">15.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>23.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 25 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/rog_strix_g16_2023_g614_53a717d385.png">
+                    <h1>Asus ROG Strix G16 </h1>
+                    <span style="color: red; font-size: 20px;">33.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>38.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 26 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/2/0/203102.jpg">
+                    <h1>Dell Alienware m15 R6 </h1>
+                    <span style="color: red; font-size: 20px;">64.090.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>66.490.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 27 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/msi_katana_15_b13_60fefcc66a.png">
+                    <h1>MSI Katana 15 </h1>
+                    <span style="color: red; font-size: 20px;">21.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>24.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 28 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2024_3_12_638458541226066442_lenovo-gaming-legion-pro-5-16irx9-i9-14900hx-dd.jpg">
+                    <h1>Lenovo Legion 5 Pro </h1>
+                    <span style="color: red; font-size: 20px;">47.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>49.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 29 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/cer_predator_helios_neo_16_phn16_71_1_3cf46bb949.jpg">
+                    <h1>Acer Predator Helios 16 </h1>
+                    <span style="color: red; font-size: 20px;">28.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>31.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 30 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2022_9_26_637998081269512256_gigabyte-gaming-aorus-17-xe5-73vn534gh-i7-12700h-rtx3070ti-den-dd.jpg">
+                    <h1>Gigabyte AORUS 15 XE5 </h1>
+                    <span style="color: red; font-size: 20px;">29.090.000đ</span>
+                    <span style="color: rgb(238, 255, 5); font-size: 15px; background-color: rgb(192, 78, 78);">Hết hàng</span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 31 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2022_6_7_637901915720184032_macbook-air-m2-2022-den-dd.jpg">
+                    <h1>MacBook Air 13-inch (M2)</h1>
+                    <span style="color: red; font-size: 20px;">21.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>27.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 32 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_6_6_638216321887898902_macbook-air-m2-2023-15-inch-bac-dd.jpg">
+                    <h1>MacBook Air 15-inch (M2)</h1>
+                    <span style="color: red; font-size: 20px;">26.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>32.890.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 33 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2022_6_7_637901935364438149_macbook-pro-m2-2022-xam-dd.jpg">
+                    <h1>MacBook Pro 13-inch (M2)</h1>
+                    <span style="color: red; font-size: 20px;">21.390.000đ</span>
+                    <span style="color: rgb(238, 255, 5); font-size: 15px; background-color: rgb(192, 78, 78);">Hết hàng</span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 34 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_6_6_638216321887898902_macbook-air-m2-2023-15-inch-bac-dd.jpg">
+                    <h1>MacBook Pro 14-inch (M2 Pro)</h1>
+                    <span style="color: red; font-size: 20px;">35.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>52.890.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 35 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2023_1_18_638096353283711618_macbook-pro-16-2023-m2-pro-xam-dd.jpg">
+                    <h1>MacBook Pro 16-inch (M2 Pro)</h1>
+                    <span style="color: red; font-size: 20px;">35.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>52.890.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 36 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2021_10_20_637703174146015116_macbook-pro-16-2021-xam-dd.jpg">
+                    <h1>MacBook Pro 16-inch (M2 Max)</h1>
+                    <span style="color: red; font-size: 20px;">105.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 37 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-pro-2022-12-9-inch-m2_3.png">
+                    <h1>Apple iPad Pro 12.9-inch</h1>
+                    <span style="color: red; font-size: 20px;">27.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>31.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 38 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/f/r/frame_100_1_2__2_2.png">
+                    <h1>Apple iPad Pro 11-inch</h1>
+                    <span style="color: red; font-size: 20px;">27.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>28.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 39 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/a/tab_s8_ultra_1_1.jpg">
+                    <h1>Samsung Galaxy Tab S8 Ultra</h1>
+                    <span style="color: red; font-size: 20px;">14.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>30.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 40 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2023_6_19_638227875696276878_microsoft-surface-pro-9-i5-1235u-den-dd.jpg">
+                    <h1>Microsoft Surface Pro 9</h1>
+                    <span style="color: red; font-size: 20px;">18.590.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>29.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 41 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/a/tab_s8_1_1_2.jpg">
+                    <h1>Samsung Galaxy Tab S8+</h1>
+                    <span style="color: red; font-size: 20px;">9.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 42 -->
+                <div class="product">
+                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/ipad-air-6-m2-13-inch-256gb.jpeg">
+                    <h1>Apple iPad Air</h1>
+                    <span style="color: red; font-size: 20px;">23.590.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>24.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 43 -->
+                <div class="product">
+                    <img src="https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcRgBQtljKP2b9jYEAD-xR1ox_9r-RAF4iXK0-3mARutfGZ-jt_KxP_Ha24xPcbhZZ1MC4wO8eVYPhF0j9e2nJde3aHWX0aWGxTK4XxVaTzOzPgyv8JpffHY1H6rywu5ts08jeZWdA&usqp=CAc">
+                    <h1>Canon EOS 5D Mark IV</h1>
+                    <span style="color: red; font-size: 20px;">17.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>19.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 44 -->
+                <div class="product">
+                    <img src="https://zshop.vn/images/thumbnails/624/460/detailed/64/81_8qiWqPaL._SL1500_.jpg">
+                    <br><br><br>
+                    <h1>Nikon D850</h1>
+                    <span style="color: red; font-size: 20px;">63.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>79.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 45 -->
+                <div class="product">
+                    <img src="https://imagedelivery.net/ZeGtsGSjuQe1P3UP_zk3fQ/2c8ccdc1-ae0f-40c9-3ab1-25d17b55d400/storedata">
+                    <h1>Sony Alpha a7R IV</h1>
+                    <span style="color: red; font-size: 20px;">83.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>92.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 46 -->
+                <div class="product">
+                    <img src="https://imagedelivery.net/ZeGtsGSjuQe1P3UP_zk3fQ/a14f6cad-24fd-41b1-993e-fa96f90a2500/storedata">
+                    <h1>Fujifilm X-T5</h1>
+                    <span style="color: red; font-size: 20px;">42.900.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>44.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 47 -->
+                <div class="product">
+                    <img src="https://binhminhdigital.com/StoreData/images/Product/panasonic-lumix-gh5-kit-1235mm-f28.jpg">
+                    <h1>Panasonic Lumix GH5</h1>
+                    <span style="color: red; font-size: 20px;">49.900.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>68.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 48 -->
+                <div class="product">
+                    <img src="https://m.media-amazon.com/images/I/719ZJOXdEtL._AC_SL1200_.jpg">
+                    <br><br>
+                    <h1>Olympus OM-D E-M1 Mark III</h1>
+                    <span style="color: red; font-size: 20px;">88.603.585đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>63.325.185đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 49 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/tai_nghe_bluetooth_choang_dau_wh_1000xm5_dd_42b1c705e2.jpg">
+                    <h1>Sony WH-1000XM5</h1>
+                    <span style="color: red; font-size: 20px;">6.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>7.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 50 -->
+                <div class="product">
+                    <img src="https://bizweb.dktcdn.net/100/451/485/products/bose-comfort-45-3.jpg?v=1683345062180">
+                    <h1>Bose QuietComfort 45</h1>
+                    <span style="color: red; font-size: 20px;">8.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 51 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2019_5_3_636924936322471575_pk-00564308-dd.png">
+                    <h1>Apple AirPods Pro 2</h1>
+                    <span style="color: red; font-size: 20px;">2.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>3.999.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 52 -->
+                <div class="product">
+                    <img src="https://www.maccenter.vn/Headphone/Sennheiser-Momentum-3-White-A.jpg">
+                    <h1>Sennheiser Momentum 3 </h1>
+                    <span style="color: red; font-size: 20px;">2.990.000đ</span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 53 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/180x0/filters:quality(100)/2023_8_9_638271952952411415_JBL-TOURONE-M2-DEN-AVT.jpg">
+                    <h1>JBL Club One </h1>
+                    <span style="color: red; font-size: 20px;">8.290.000đ</span>
+                    <br><br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 54 -->
+                <div class="product">
+                    <img src="https://i.ebayimg.com/images/g/~tAAAOSw0ltnUIJW/s-l1600.webp">
+                    <h1>Beats Studio 3 Wireless</h1>
+                    <span style="color: red; font-size: 20px;">10.064.113đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 55 -->
+                <div class="product">
+                    <img src="https://www.maccenter.vn/Audio/JBL-Flip6-Black-A.jpg">
+                    <h1>JBL Flip 6</h1>
+                    <span style="color: red; font-size: 20px;">2.550.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 56 -->
+                <div class="product">
+                    <img src="https://thienhaaudio.vn/wp-content/uploads/2020/04/bose1-768x768.jpg">
+                    <h1>Bose SoundLink Revolve+</h1>
+                    <span style="color: red; font-size: 20px;">8.490.000đ</span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 57 -->
+                <div class="product">
+                    <img src="https://bizweb.dktcdn.net/thumb/grande/100/479/913/products/loa-bluetooth-sony-srs-xb43-06.jpg?v=1681876717313">
+                    <h1>Sony SRS-XB43 </h1>
+                    <span style="color: red; font-size: 20px;">3.090.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>4.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 58 -->
+                <div class="product">
+                    <img src="https://product.hstatic.net/1000333506/product/boom3black-gearvn_8a3c985e1df54d48b25a6fca29cb50bc_grande.jpg">
+                    <h1>Ultimate Ears BOOM 3</h1>
+                    <span style="color: red; font-size: 20px;">3.390.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>3.690.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 59 -->
+                <div class="product">
+                    <img src="https://bizweb.dktcdn.net/thumb/1024x1024/100/405/018/products/bo1q47aa-jpeg.jpg?v=1671512239173">
+                    <h1>Anker Soundcore Motion+</h1>
+                    <span style="color: red; font-size: 20px;">3.405.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>3.700.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 60 -->
+                <div class="product">
+                    <img src="https://hoanghamobile.com/Uploads/2021/07/07/image-removebg-preview-1.png">
+                    <h1>Harman Kardon Onyx Studio 7</h1>
+                    <span style="color: red; font-size: 20px;">3.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>5.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 61 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_9_13_638302311083071245_apw-s9-gps-45-dayvai-xanhden-dd.jpg">
+                    <h1>Apple Watch Series 9</h1>
+                    <span style="color: red; font-size: 20px;">9.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>11.290.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 62 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_7_26_638259925787438821_samsung-galaxy-watch6-vang-dd.jpg">
+                    <h1>Samsung Galaxy Watch 6 </h1>
+                    <span style="color: red; font-size: 20px;">8.490.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>9.490.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 63 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/garmin_forerunner_965_black_yellow_47fda5393f.png">
+                    <h1>Garmin Forerunner 965  </h1>
+                    <span style="color: red; font-size: 20px;">15.690.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>16.490.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 64 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/384x0/filters:quality(100)/2020_7_7_637297352698912078_dong-ho-thong-minh-fitbit-versa-2-petal-copper-rose-vn-1.jpg">
+                    <h1>Fitbit Sense 2</h1>
+                    <span style="color: red; font-size: 20px;">4.379.100đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>5.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 65 -->
+                <div class="product">
+                    <img src="https://cdn2.fptshop.com.vn/unsafe/150x0/filters:quality(100)/2023_7_26_638259687346772752_huawei-gt-3-pro-dd.jpg">
+                    <h1>Huawei Watch GT 3 Pro</h1>
+                    <span style="color: red; font-size: 20px;">10.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>12.490.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 66 -->
+                <div class="product">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUSEhIWFhUVFxUVGBgYFxgVFhUVFRgWGRYVFhkYHSggGBolGxgdITEhJSktLi4uGB8zODMtNygtLisBCgoKDg0OFRAQFTcdHR8rKy0uLy0tListLS0rLS0tLS0rNS03LSwtMDUrLS03KzItLSswLS0uNzc3LS03KzcrL//AABEIAOEA4QMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAABAIDBQYHCAH/xABJEAACAQIDBAgCBwUFBgYDAAABAgADEQQSIQUxQVEGBxMiYXGBkTKhFCNCUnKxwWKCktHwJDNDssIIU3OTouFEY6PD0vEVJYP/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAIBEBAQACAgICAwAAAAAAAAAAAAECERIhAzFB8FFhwf/aAAwDAQACEQMRAD8A7jERAREQEREBERAREibR2pQw4zV61OkOBd1S/lc6wJcTlfTTrTyN2WAIa3xVihZb8qYJF/xG45XnPcb0v2hVN3xuJ1+4woj2p2gelp8ZgN5Anlepj67fFiMU34q7t+bSHVohviVm/E2b84Hq18dSXfVQebKP1lhttYYb8RRHnUT+c8qHC0xr2Q9xLdk4JaB6Ox3WdsqkbHFBz/5aVKo/iRSvzmPbri2UPt1j/wDwf9ROAmqOAlBqQPQtDrf2Qxsa7p+KjV/0qZtmx9uYbFrnw1enVA35GDEfiG9fWeTi194BnzDVqlGoKuHqPSqLuZGKt7jh4HSB7Cici6vut1apXD7RKpUOi19FpueAqjdTb9r4T4ceugwEREBERAREQEREBERAREQEREBETAdK+l+F2emau92N8tNO9Ue3IcB4mwgQOnvTIYFQlNc9dwSoPwou7O/PXcONjynENo4qrXqGrWdqjtvZvyHADwGkmbQ6QHHV3rBWZnNwoBYqu5VsOQsJfp7GxbC4wtb/AJbD8xAwnZeEdn4SfjcFiaXx4eso5mm4Hva0xLbSHOBf7LwluqMouQZZ/wDyYk/Y2HqYyp2VFMxtc8lX7zHgIGHrVuJkJ6l5u+K6DsDY3Y+w/rzmH6QdEXoUjVFRTlIzIDdgCbX8tZNmmtNU5SgpffCy+olFkUuRtKxUYb9fGXgsryQLLAMJ0vqv6y2wpXCY1y2HNglQ6mhyVjxpf5fLdzV6WXUbpSw4wPY6MCAQbg6gjUEHcRPs4d1NdPDSZdn4l/q3IXDuf8Nzuok/dJ+HkdNxFu4wEREBERAREQEREBERARE1Tpz0uXBUylOzV2HdB1CX+244+C8fAawHTHpWmGGQPZzfdq/4aa8W5k6LfXw4/Vda1Rq1dO1c/ZZiUUcAeLe+u+QcdtAAmpVcs7byTd3/AJDw0ExlbbDtondHuxk0NvXa1ZFyU3FFBuWiq0l9Mov85Hq7Qq6fX1idb/Wv6W1/q81mlhKz7w2v3jblz8xJjbGrKQCBchW38HVWHyYSjN0ekGLp/BiavkzFx7PcSrF7WoYnTG4Wm5P+LTGSqPO2/wB/SYBkqpvBt7ifQ9/OBD2vsBUYdhUDq5suYhTrwJNgPW07V1e9HqeCwopmxq1LPVca3bgoPFVGg9TxnG6ji2U3I4jdrzHK3ObP0N6Vvh2WhWctRbSm53p4Hy4j1kVvPSSret2KaBVDORvu24D0I/imOOxxiV+ijuiobEjeOJbxta8pq1s1eu3Nl9si/wAhNn6EIDUqNxVQB+8dfykHnrb2xqmFrPSqLZ6bFWHDwYeBFiPAiQEE6L1zbbp1sYUpUTmog0qlT/eEG9gOSm4vxueAF+Zs9ThTb2mkTAZ9DSCWq/cb2M+Xq/cb2gZJWG6R3Wx8JFBq/cMrz1LaoYH1nynj6aWPAg8J0zY3XLjlUCpTo1QgUEkMr1LbzmDEBjzy2ud05gKTtowsPnL+YKLLA9dbF2pTxVCniKRulVQy30IvvBHAg3B8RJs5R/s/7az4athGOtB+0T/h1rkj0cMf3hOrwEREBERAREQERKK1VUUsxsqgkk7gBAw/SzpAmCoGox7x0ReLNwnnjpD0hZ3ao5zVHN/ADn5TI9YXS44qs1S/cUlaS+H3j57/AGmm7OwxqsXcki+v7R5eWnpAl4LBPXzVGYBRYksdWuwWyDiRmGnAX5TM4SklP4BY8zqeEpwlYKf2bFbfslSvyH5T7TuSAouToBAlipJNZxmNtADYW8NJXgdlB7AtmJ5Nkp+jWJbztaV19nBdFJU7hds6E/dJsCp8xaBQlT+vb+Ut19nqyl1IDAju/eve58LWHqwltWO4ixGhHIiSmr3tbcosPzJ8ydYGBxNIkHmOHP8A7yHg8UFaz/ASL/skbmHiPyvNhx1G4zjeN9uXP8prG1KOVrjcdfXiIHStlIyWzG4dRY+KgC3llAt5Tbuiu0adGoxquqIUPeYhRdTcanwvNE6D47t8FVp2vVwo7ReZpi5+Wo9pq21NpVMTVqFLhBYLe+gsL2A8b8Rv4zOlZXrDq0WxtWrhqgqU3IckA2DN8QuRzueWomr9qZmthsqVCKg+IBTe2jAWKkXNr77HXwkDbuEWjVIU9xu8vgDvHoQR7Rjlu2fh28vguGGOe9zL7pCNQyk1DKS45iUlxzE04Ki5nwsZQag5ifO0HMQLVU2PnLT75drOLb90sudB4wN86kazja1MJezUqwqcsgUMCeXfCD1npCc16hsDQXZ3aogFZ6lRar72bIxyC/ABSNBpqTxnSoCIiAiIgIiICc465OkJpUVwlM2etq/hSB1HqdPQzozGwueE8v8AWNt44nEVqwOjt2dPwprpp5j/ADQNWqsa9Ww3bh4KN5/X2map2UBRuG7+frvkPYTCmpLAMKlsw0vlU3Fja6NfW44abpsPRnZtLEYnsmNQplqOAmVarlELCmubu5ja0DHI0yOz1BsLgZ1LO33KK8bcb2vbj3Rxn3pFskUbVaLF8PVv2bn4lb7VKoPs1F5cd442x2OxjLTrAHumrSpAcgqsWt4E06ftA2Wn0hNyKRNNf2TlY+LstiT4bhwEuJtvtQyVmBJVgrtqwIBORmOpVvh13EgjS4ON2N0jRKSKaNYlVA0pqyE5sxPxgk5tQQVvcg2IV5j9tbXStVQ06JpWFmB3lmYseO67E3037hYQMlVqZsr3uSCp8SmgJ8SpE+o0jYWo9RE3szO1hvJsqKAAPYCblsfZS4e7uU7VLFmbvUsJfdf/AHlfkg3GBDqbCqpRNWoUWwUmkSe1C1DlRitrC+uhO4Xmn7Vw+jL93Ucd3/abftPbi1AaaBuzJzHMe/We397WYbzyQaCYHatQuwdjckAHdw0GgFgLcPCBa6rdp/R9o0c1slUmiw4WqfDf960sbQqDZuMxOGI7gdgh+6Ae5/6ZWYdb06gcb0YMPNTcflOt9J9gUMZiH7Rf7+hTrKw0ZXAyXB8stwdDYSDkn0pqrEoAQfs8vG/Br2Om4DW+6bjt7ojVobLp4muv1rV1FjqyUWpvYMTxLgG3iJsnQTYdHCYmmTTpvchcxSzqxIyve9iQfDjNw63KGbZdf9k0m9qqX+Rj9tcrrjvp5mcWYiXAs+Ygd/2lSysvopiVikOQgSsQKatEZdw9pjm0I8xMs/wmYrEQO9/7Plf+zYqn92uH/jpoP/bnVpxP/Z5r/W41L70oOB5GqCfmJ2yAiIgIiICIiBrnWFtP6PgKzg2Zl7Ned37unoSfSeWtrHNVCD7Nl9TqT/XKd767cZ9Xh6N/idnPkosP808/4Spmql7/AHmGtt+61vOBk7jcNw0Gt9BKqdUqQysVYEEEGxBGoII3EGWM0qvA32h0goYihV7awq1FC1KVvq6tUWyYtPuOADmtxtzmrY/DMVq08oBDCutr3cDOKhJJsSA4OnBJjVe2o38Jn9nYztABfK6/CdLqeYvu84GEoVXAsDwt6S5Qpszg2zMdwtvI524WmWqYftDkyKKubXKCtxY3JF8oF+QEvvUTDjKpDPuzAAHfz5eMbXjdcvhntgVaGHR+0bsqgUZWQZnUE3qU6WYmztewY6gDUzGbU2s1aygZKSXyUwbgc2Y/bc8WMxNBXquFGrMbeA5+QA19JtJ6JMtMN9YL7mKgU7ndpfMAeZ9oRgVaMYboPA8/0lFiCQdCDYjkRvEYlu56jj+kDG4mkSTbz38/DjOwYDvDZz8WwxQ+iqf0nKWp31uNw566DdYfnOtbIX6rZo5Un/ySUUKmVwfusD7GbL1jpfZmL/4Rb+Eg/pMDWHePmfznPusXbuLqYvE0fpFQUbml2QYimUUBSCo0NyCTfnEHO8We/wCkK4kxsEDvtKDgB/V5RZDiVCpKjgR/V5ScF/WsC4KgsfKY7ESZ9E8fmZZNAXN4HTf9n6tbHVV+9hr/AML0/wD5Gd9nkHYm3MRgqva4WqaT5SmYKj9wkErZwRvUcOE9HdVXSOrj8AtauQaqvUpswAXNkOjWGg7pG7iDA3CIiAiIgIiIHE+u/En6SovpToE+puf0nItiui58ylvgGjlNASWG43v8p0/roN8VW8KIHyM5VgG7ra8Rx8Dw/WBsex8dhkqM1SjemVUZWtVNxUplrEgZSaYdb8yJnqe0tkj/AMO1ri10vZQRfMQbk6XuAPiGh1B0fNJeFx5QAW3eNrm4PLwA9IG1Vcbso7qTG5p7kKBUzp2oPfPfy57EC24cJq/bHOWRcpLEhRcgXOiDiRwkerWzMW5kmSg3ZD/zGH/LU/k5HsPE6S1rHHfv1GyYza+GWm6U/wC+y0l5kPoapZhoRvGnHSYEVCTc6k75CUy6jRJpryeTnfWpOvv9bT0LIOIF7XymwO4m4nRsViKlu9nFLKdHZibFCGzHPb4gDYg/HpaxnGsLiWRgymzDUGZjHdJMRWTIzWXjbjK5lSujVXZi2UsT3bX1PjKNoOmQZM2rH4go7ttNQb38N0ho0qrm7Itvlbf+fnAlWTKblswtYAAqRxuc1x7Gdb2bTyvg6Z/w8KGPhcKs5NhqXaulMDvO6re/3iBut4851mpiB9IxLjdSppRXzIJI97SUWg1z5n85yzpmb47E/wDHqj2dhOn7J79amvN19gbn5CaV1g9FcVRr4nEmkThzUZ+0zJa1V7gZc2b4mtuiFaUZ8MtPi1G+/sZT9MTmfYyi6ZSZbOKTmfYz59IXn8jArkN95kjtl5/IyI9QXOsCw2+eiuoZbbKHjWrH/qA/SeeMPQeo2WmjudTZFZzbnZQTbXf4z0v1PbMqYfZdFaqlHZqlTKwIYB3JW4O42sfWBusREBERAREQOF9cFC+LrDnSA91M5DgH0YeR3/pxndOt7D2xSN96mPUgkW9hOG4ellrGmWyi7ITqd27RdTew08RAv3lVPUgcyB7z7ia62ComUC1yxzOzcSTbQclA9zrLmFUKO1cd0HujdnccPwjifTedJbprHHldNo2vsqhhij06b1TkzkK2i6AlmYhgMt+I1M1/Z5c1O0Sia+U5mQq1QMCbWfLrrffzmZ2yBVRHydoQQVF8ou4yi55AkHeN28SFsXaBwodlq07sbEFWa4pkhShDLobtr5biNEnyuWUvU9MjtbZ+HrNfBg0iO52VVGo9oylv7qpUZg1QCyMjFSSjEA3tMfgsGGYI9Osr58hJ7qqR3mUhluGy62vy0n3H40vRNI1qbq1Q1rZdVZ2JYBixCLdzcW+z53nbFpsDmc1M1MGkQ7Zh3CbZf2RcgDUC5sbGVirXSHZyYer2aOXsNSSD7W4aSBTaUbRxfaVWYbtw8hp/39YwrrcZ75dxtvHiL7/KBLpNr/Rii93LcBu/oyjEp2YuDmDEhGsQGANiy31BHI85TQaw8d/8oG3dAqQfFrUYAJQRqrH8Ist/G5v+7Nmp4o/Rs5+LE1Xqn8N9PkFmubCUphSq/wB7jHVAeIp8/K2Y/vTJ7ZxAzhF+Gkopj03/AMvSZtWNm6CU+0xGbhTUt6nuj8z7SZ1yYjJs1l/3lWknsS/+iS+rfBZMOapGtVtPwJcD55prnXvirUcNSvq1R6n8C5f/AHJYlcTxtLMLjeJCz23zJGUMsogirK0qSQUHIT5aBTeQ8Vukt5CxR0gdO6gaH/7Co33cKw/iqUf5T0DOH/7PdG+IxjfdpUF/iZz/AKJ3CAiIgIiICIiBoPW5gr0aVfLfs3KnlZxcXtwuoH7088dJMOVq5xucA/vDQ/KxnrXpBs0YnD1aB0zqQDycao3owBnmjpDgCyshBDqTod6suhU/NfSBr2HpBruxtTFi1rXudyKPvG2nIamW8RiC7XsABoqjcq8FH9am5kajVNsjHS+l/ssdD5bhfykqmihHZiM2iKt9bsLlyN4AGg8WHIyabuXWozWxccGTsm1sCNeK8v0ldTAMSMoDAGlYHelNCxZV01zFgb+B33vNbVyNRoZkcPtqonI+JlqY6lm2Tw2zyNHsLqUe32vrM4JOmUiyjj8M+7U2kFXsqfkbblHLzmJxG1aj31Avy3yNRZcwzHu3Gbna+p9oSr6NJFL+tbfOWK2HZKjUzvRipO4aG2by8fGfDUv3V9fHdv8AI31hEkPmN+A9PlzkiiQSS2ijUn9nw8Tu8zIangJnKey2TKagsigVGv8AaYfAvkupPj6SUXtpbRqhaaIxSo4sLGxRSNbcrLp7yd0G2BVxmKFNK1QUx3qhvmsgtci9+8d3m01iviyzM4+Kp3UHEJff5k/rPQvVf0Y+hYQFx9dVAZ771Fu6npvPn4SaVntoVfomF+pQHs1VKaE2F9Atzy4nynn3rB6QV8ZiLVcv1ANMBQbXv3/W4t+6J3vpip+iuV3qVb2YA/ImeZukOP7PE1lI+2Tf8ff/ANUqIhBl7A7PrYh+zpA5rFvJRa5+YHrIo2qDwmf6FbXy4my6Fkdd3irf6ZRjdp7Fr4bL2rfFewsL6WudOGo95ALGbd0/xrXpO+ujr5HQ/wA/aavXrlArPTdQ4zIWUqHXTVSR3hqNRzkgjO5mwbE6C4jFXJIpKADmYE6nUALcX/Sa/UxqEHyM7j0Yxva0z4ZT6Mot+UVUnqT2K+F+nLUAzdtTS43Mq084IvwtUnTpheiwHZvYal7nx7qgfITNSoREQEREBERATk3Wr0XIc4ukt1f4xyqWtfyYW/eH7U6zLWKw61EZHF1YWIgeP9r4K5LqNeI5+I8ZAGIuFV9yiwPIEknz1JPMm06v046GsjNUoAkqT2lMbxb7a8wd9pzDF4cEk7jAj9mfPy15fztJGDcAVSTr2dlHNmemNP3Sx9JDyMu75S4uLcAjna+nI3/OB9W/KVgAasdNNOJ3H8j8pY7Vjx/Tl/8AEe0+rTvvgSquIL2AFtADrcsQACxPja9pWgtLdFCSAouTwGpmW2ZRAqBVXtat/hHeVTy0+JvkIGV2TsOotMYhrKSRkB3gfftz5e82DF7PFekVZmGa2otcAEc9NbazJNsyolJGrHNUchQPs01tcgcyTYE+NpWKfAeQ8eUyp1YdX6nE/SKrmpTo2ygqADU4A87DX25ztsx+wtnjD0EpDeBdjzc6sff9JkJpEfaOG7WlUp/fRl9wRPK3TvD2rhiPiUX/ABKbH5WnrGee+trZoTFMCLfWF18VqDMfQHT0ko5sKdrSfsyt2VVKn3T8jofkZDqNdj7S4plGd6S7SWvSCjerZvkR+s1aq9RyA7swQBVzMWyqNyrfcPASTna57unA3G6XaVIDXjItW6WH0nTerjHXsnNLetM6fK850xsJm+he0hSrJc7nB/dbutFI9DdFW/vB+E/nM/NZ6MP9Yw5r+RH85s0RKREShERAREQEREDVOl+EKstZdL90nk32T6jT0E5XX2Vh8fmFZPo2JUkGog+qqMDa7L9kn+jO84zDLVRqbi6sLHn5jxG+cL6wqGI2fUzZbhjZXA7rcj4HmOB8xeVWq7W6u8fS1SmKy7w1M3uOeU6zXK2w8Ups2Hqj9xv5TZcP0+2qqhBXsi3svZUmAuSTqyk8ecqqdOtpN/ij+BLflCNXGx8Ra5pMo5tZB/1ESqlg1Bsz3P3aYzH+I2A9LzJY7beKrf3hDelvykBq9S1sot4Gw+QjtVeLIUZU7i21A1d/Bm5eAt5TqfVns/Dth0q0UsTmVs2rBlNiL8uPqLzmWy8XQQ3xGDbEfs/SGop6hEzf9U6l0G6Z4as4wtLApgwFLKEfOtRgRe/cU57a3N7gHlGhl+llPK1AeLe90kbYVINiKIO7tE+RBt8pN6XMKiKy/FTN/Q2/UCYvZdUmtQNPUmrTt55xv8uPkZB2AT7ETSE8/ddO1lq45lXdQRaZPNz3m9swHoZ23pNthcHhquIb7CnKPvOdEX1YgTyvtfEtUcljdmYux5sxuT7mBApiVO1heXFSfKtHMLQLVHEXNrSUstUcOF3S+ogW8QeEjpcMCN+6V1muTOjdXfVricStLGOaaUn7yZrs5UGwYIABra4u3I2gdX6EUyVDtvCIp/EQC35fObXIuzsCtGmKabhxO8niT4yVAREQEREBERAREQEhbY2ZTxNJqNRQysNLi+VvssPEHWTYgeWdo4UJVqUzoUZlItuZSQR7iR+zWdK64uixp1Pp1IdyoQtYD7NTctTybQHxt96czgVdkPCfDQEpvPhMD6cNPtJezYODlZTcEbwRKbyiqLiBnR0yY/EbMN/I+XgeU6R1V7OXE2x40RS6qlwQagurNbeoAPgTp4X4ZXp8Z0zqH6RCjiKmCqNZcR36d9wrIO8v7yAf8vxk0ru8RNE6zemowdM4ei39oqLvH+Ch+2f2jwHr51GldcXSoVqv0am16VAnNY6PW3EeS6jzLchOWohJueMv1qmc+H5+JlaJAtZNJVsjY7V+1d8RRoCmub61iGqE3slJFBZzpwGlxzkepjgDYbhpfxkylqLwLKJpPlU2EkPpIVd4Ezo3sR8diqWFS47RhnYfYpjWo/ot7eJA4z1lhcOtNFpoMqIqooG4KosB7Cc26kuiRw1A4ystq2IAyAjWnQ3r5FzZj4BeU6dAREQEREBERAREQEREBERAt4iglRWR1DKwKsrC4YHeCDvE4j1l9Avoh+kYUf2djZkNyaTHkSblD47jpyncpG2jgadek9GquZKilWG64PIjcfGB5T73KUljym39OOgOIwBNRM1XDcKgF2QcqoG78W4+G6ab2x5wKi55GU9p4GUnEGfPpHlAtVKutraT5TqMjK6MVZGV1Yb1ZSCrDxBF5catfgJ8JBgdgxHXMDgk7On/AGwjLUuD2VNhp2i/fvvC8OO7Xk2Mxj1nZ6jFmYlmYm7Mx3kmQHW0rWtzgS0lH0xb2/8Aq8sU8RfeLQSnIewgTUCjUKB6DjpPrVLSCcTylBqQL9WtN26qOg5x9YYmuv8AZaTbjur1B/hjmgPxHj8PO1rq76uq20WWtWDU8IDfNuat+zS/Z5v7XO70RgcHTo01pUkCU0AVVUWCgbgIF8CIiAiIgIiICIiAiIgIiICIiAiIgDNW6Q9X+AxaMGoJTqNuq0lCOG4E20bya4m0xA89bU6otpUiezFOuo3ZHCsR4rUygHwzGa3jOh+0aXx4LED8NM1B708wnqmIHjvFUnp6VFZDydWQ+zASyKoO5h7z2SygixFx4yBiNhYSp8eGoP8AipI35iB5Ddm5ifQec9UVegey237Pw3pSRf8AKBIr9WmyD/4Gn6Fx+TQPMOk+aeE9P0urPZC3IwNM3+8Xb2zMbSXhugmy6ZuuAw9xqL0lax/eBgeZ9h7DxOMbJhaD1dbEqO4v4nNlX1M7F0J6nadIrW2gVrONRRW5oqeGckA1T4WC+B3zqtKkqgKoCgbgBYDyAlcD4qgAACwGgA3Acp9iICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiB//Z">
+                    <h1>Amazfit GTR 4</h1>
+                    <span style="color: red; font-size: 20px;">3.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>4.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 67 -->
+                <div class="product">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDk2hVLxtGRs_oAuPXbYrNKnFKccFqx1LbAw&s">
+                    <h1>Epson EH-TW7100</h1>
+                    <span style="color: red; font-size: 20px;">40.450.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>55.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 68 -->
+                <div class="product">
+                    <img src="https://maychieuphim.vn/files/assets/may_chieu_benq_tk850.jpg">
+                    <h1>BenQ TK850</h1>
+                    <span style="color: red; font-size: 20px;">44.700.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 69 -->
+                <div class="product">
+                    <img src="https://www.viewsonic.com/vsAssetFile/vn/img/projector/PX727-4K_L01%281%29.jpg">
+                    <h1>ViewSonic PX747-4K</h1>
+                    <span style="color: red; font-size: 20px;">48.990.000đ</span>
+                    <br>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 70 -->
+                <div class="product">
+                    <img src="https://maychieuphim.vn/files/assets/may_chieu_nebula_capsule_3.jpg">
+                    <h1>Anker Nebula Capsule</h1>
+                    <span style="color: red; font-size: 20px;">10.400.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>16.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 71 -->
+                <div class="product">
+                    <img src="https://xgimi.vn/wp-content/uploads/2023/11/Xgimi-viet-Nam-Mogo-2-Pro-scaled.webp">
+                    <h1>XGIMI MoGo Pro </h1>
+                    <span style="color: red; font-size: 20px;">14.675.500đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>18.999.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 72 -->
+                <div class="product">
+                    <img src="https://maychieuphim.net/wp-content/uploads/2023/08/lg-pf50ks-minibeam-fhd-01.jpg">
+                    <h1>LG PF50KS</h1>
+                    <span style="color: red; font-size: 20px;">18.000.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 73 -->
+                <div class="product">
+                    <img src="https://gucongnghe.com/wp-content/uploads/2021/10/Camera-trong-nha-Google-Nest-day-2021-768x768.png">
+                    <h1>Indoor Security Camera</h1>
+                    <span style="color: red; font-size: 20px;">2.390.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>3.190.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 74 -->
+                <div class="product">
+                    <img src="https://gucongnghe.com/wp-content/uploads/2021/08/Google-Nest-Cam-Battery-11-01-768x768.jpg">
+                    <h1>Outdoor Security Camera</h1>
+                    <span style="color: red; font-size: 20px;">2.990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>5.590.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 75 -->
+                <div class="product">
+                    <img src="https://clarionuk.com/wp-content/uploads/2022/02/avigilon-h4-ir-ptz-camera-wipe-min.jpg">
+                    <h1>Pan-Tilt-Zoom</h1>
+                    <span style="color: red; font-size: 20px;">17.986.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>22.999.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 76 -->
+                <div class="product">
+                    <img src="https://thaihungsmarthome.com/wp-content/uploads/2022/10/Camera-an-ninh-eufy-solo-pro-2k-1024x1024-1-768x768.jpeg">
+                    <h1>Wireless Security Camera</h1>
+                    <span style="color: red; font-size: 20px;">2.790.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>2.990.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 77-->
+                <div class="product">
+                    <img src="data:image/jpeg;base64,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">
+                    <h1>360 Degree WiFi Security Camera</h1>
+                    <span style="color: red; font-size: 20px;">990.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>1.290.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 78 -->
+                <div class="product">
+                    <img src="https://5.imimg.com/data5/SELLER/Default/2022/6/WT/VS/PY/85112307/infrared-night-vision-camera-500x500.jpg">
+                    <h1>Infrared Night Vision Camera</h1>
+                    <span style="color: red; font-size: 20px;">1.400.000đ</span>
+                    <span style="color: gray; font-size: 15px;"><strike>2.000.000đ</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 1-->
+                <div class="product " id="doan">
+                    <img src="https://cokhiviendong.com/wp-content/uploads/2019/01/kinnh-nghi%E1%BB%87m-m%E1%BB%9F-qu%C3%A1n-g%C3%A0-r%C3%A1n-7.jpg">
+                    <br><br>
+                    <h1>Đùi gà rán</h1>             
+                    <span style="color: red; font-size: 20px;">25.000đ/1</span>
+                    <span style="color: gray; font-size: 15px;"><strike>35.000đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 2-->
+                <div class="product" id="doan">
+                    <img src="https://www.cet.edu.vn/wp-content/uploads/2018/04/canh-ga-tam-bot-chien-xu.jpg">
+                    <h1>CÁNH GÀ CHIÊN XÙ</h1>             
+                    <span style="color: red; font-size: 20px;">20.000Đ/1</span>
+                    <span style="color: gray; font-size: 15px;"><strike>30.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+                    <img src="https://cdn.tgdd.vn/2020/09/CookProduct/84-1200x676.jpg">
+                    <h1>kimbap chiên xù</h1>           
+                    <span style="color: red; font-size: 20px;">40.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>50.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 4-->
+                <div class="product" id="doan">
+                    <img src="https://file.hstatic.net/200000700229/article/chien-khoai-tay-bang-noi-chien-khong-dau-thumb_924cdf6af0fe41eeba255eb227e58ad5.jpg">
+                    <h1>khoai tây chiên</h1>
+                    <span style="color: red; font-size: 20px;">15.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 5-->
+                <div class="product" id="doan">
+                    <img src="https://bvnguyentriphuong.com.vn/uploads/072022/images/xuc-xich.jpg">
+                    <h1>xúc xích đức</h1>
+                    <span style="color: red; font-size: 20px;">15.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 6-->
+                <div class="product" id="doan">
+                    <img src="https://cdn.tgdd.vn/Files/2020/03/23/1243844/lam-nem-chua-ran-chien-xu-chuan-vi-ha-noi-tai-nha-202201101658126508.jpeg">
+                    <h1>nem chua rán</h1>
+                    <span style="color: red; font-size: 20px;">30.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>40.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 7-->
+                <div class="product" id="doan">
+                    <img src="https://cdn-www.vinid.net/ecbe8290-com-nam-rong-bien-3.jpg">
+                    <h1>cơm nắm rong biển</h1>
+                    <span style="color: red; font-size: 20px;">20.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>25.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 8-->
+                <div class="product" id="doan">
+                    <img src="https://kokugyu.com.vn/wp-content/uploads/2022/06/GL.jpg">
+                    <h1>canh miso</h1>
+                    <span style="color: red; font-size: 20px;">10.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>20.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 9-->
+                <div class="product" id="doan">
+                    <img src="https://media.loveitopcdn.com/20960/sashimi-ca-ngu.jpg">
+                    <h1>shasimi ca ngừ</h1>
+                    <span style="color: red; font-size: 20px;">100.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>120.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 10-->
+                <div class="product" id="doan">
+                    <img src="https://loptiengnhat.edu.vn/wp-content/uploads/2016/11/tim-hieu-ve-mon-sashimi-nhat-ban.jpg">
+                    <h1>shasimi cá hồi</h1>
+                    <span style="color: red; font-size: 20px;">100.000Đ/1 suất</span>
+                    <span style="color: gray; font-size: 15px;"><strike>120.000Đ/1</strike></span>
+                    <button>Mua ngay</button>
+                </div>
+                <!-- Sản phẩm 11-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 12-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 13-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 14-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 15-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 16-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 17-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 18-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 19-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 20-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 21-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 22-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 23-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+                <!-- Sản phẩm 3-->
+                <div class="product" id="doan">
+
+                </div>
+
+
+            </div>
+    </form>
+</body>
+
+</html>
